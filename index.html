@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <!-- Meta tag ini wajib agar tampilan web pas dengan ukuran layar HP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Papan Skor Digital Mobile</title>
+    <style>
+        /* CSS DASAR (Berlaku untuk semua layar) */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #ffcc00;
+            margin: 10px 0;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .scoreboard {
+            display: flex;
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .team {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .team-input {
+            background-color: #3a3a3a;
+            border: 2px solid #555;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            width: 80%;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .team-input:focus {
+            outline: none;
+            border-color: #ffcc00;
+            background-color: #4a4a4a;
+        }
+
+        .score {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #00ffcc;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        button {
+            padding: 15px 25px; /* Tombol diperbesar sedikit agar mudah ditekan di HP */
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff5555;
+            color: white;
+            transition: 0.2s;
+            touch-action: manipulation; /* Mencegah delay double-tap di HP */
+        }
+
+        button.btn-add {
+            background-color: #28a745;
+        }
+
+        .control-section {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            justify-content: center;
+        }
+
+        .btn-control {
+            background-color: #555;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-reset-names {
+            background-color: #444;
+            border: 1px solid #666;
+        }
+
+        /* ======================================================== */
+        /* ATURAN 1: LAYOUT HP VERTIKAL (Tegak / Portrait)          */
+        /* Jika lebar layar kurang dari 500px (khas HP berdiri)     */
+        /* ======================================================== */
+        @media (max-width: 500px) and (orientation: portrait) {
+            .scoreboard {
+                flex-direction: column; /* Mengubah susunan jadi atas-bawah */
+                gap: 30px; 
+            }
+            
+            .score {
+                font-size: 4.5rem; /* Ukuran skor sedikit disesuaikan */
+                margin: 5px 0;
+            }
+
+            /* Beri garis pembatas tipis antara tim atas dan bawah */
+            .team:first-child {
+                border-bottom: 1px solid #444;
+                padding-bottom: 20px;
+            }
+        }
+
+        /* ======================================================== */
+        /* ATURAN 2: LAYOUT HP HORIZONTAL (Miring / Landscape)      */
+        /* Jika layar melebar ke samping (khas HP dimiringkan)      */
+        /* ======================================================== */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                justify-content: flex-start; /* Agar tidak terlalu mentok atas-bawah */
+                padding: 5px;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+                margin: 2px 0;
+            }
+
+            .scoreboard {
+                flex-direction: row; /* Kembali ke kiri-kanan */
+                gap: 20px;
+                padding: 10px;
+            }
+
+            .score {
+                font-size: 3.5rem; /* Diperkecil agar muat dalam layar miring */
+                margin: 2px 0;
+            }
+
+            .team-input {
+                font-size: 1rem;
+                padding: 4px;
+            }
+
+            button {
+                padding: 8px 20px;
+                font-size: 1rem;
+            }
+
+            .control-section {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>PAPAN SKOR DIGITAL</h1>
+
+    <div class="scoreboard">
+        <!-- TIM HOME -->
+        <div class="team">
+            <input type="text" class="team-input" id="name-home" placeholder="ganti nama">
+            <div class="score" id="score-home">0</div>
+            <div class="buttons">
+                <button onclick="kurangSkor('home')">-1</button>
+                <button class="btn-add" onclick="tambahSkor('home')">+1</button>
+            </div>
+        </div>
+
+        <!-- TIM AWAY -->
+        <div class="team">
+            <input type="text" class="team-input" id="name-away" placeholder="ganti nama">
+            <div class="score" id="score-away">0</div>
+            <div class="buttons">
+                <button onclick="kurangSkor('away')">-1</button>
+                <button class="btn-add" onclick="tambahSkor('away')">+1</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-section">
+        <button class="btn-control" onclick="resetSkor()">RESET SKOR</button>
+        <button class="btn-control btn-reset-names" onclick="resetNama()">RESET NAMA</button>
+    </div>
+
+    <script>
+        /* JAVASCRIPT MASIH SAMA SEPERTI SEBELUMNYA */
+        let skorHome = 0;
+        let skorAway = 0;
+
+        function tambahSkor(tim) {
+            if (tim === 'home') {
+                skorHome++;
+                document.getElementById('score-home').innerText = skorHome;
+            } else if (tim === 'away') {
+                skorAway++;
+                document.getElementById('score-away').innerText = skorAway;
+            }
+        }
+
+        function kurangSkor(tim) {
+            if (tim === 'home' && skorHome > 0) {
+                skorHome--;
+                document.getElementById('score-home').innerText = skorHome;
+            } else if (tim === 'away' && skorAway > 0) {
+                skorAway--;
+                document.getElementById('score-away').innerText = skorAway;
+            }
+        }
+
+        function resetSkor() {
+            skorHome = 0;
+            skorAway = 0;
+            document.getElementById('score-home').innerText = 0;
+            document.getElementById('score-away').innerText = 0;
+        }
+
+        function resetNama() {
+            document.getElementById('name-home').value = "";
+            document.getElementById('name-away').value = "";
+        }
+    </script>
+</body>
+</html>
