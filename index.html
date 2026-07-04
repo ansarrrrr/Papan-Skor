@@ -403,9 +403,11 @@
             riwayat.forEach(item => {
                 let row = `<tr>
                     <td>${item.waktu}</td>
-                    <td style="font-weight: bold;">${item.timHome} <span style="color: #ffcc00;">vs</span> ${item.timAway}</td>
-                    <td style="color: #00ffcc; font-weight: bold; font-family: monospace; font-size: 1.1rem;">${item.skor}</td>
-                </tr>`;
+                    <td style="font-weight: bold; text-align: center; width: 50%;">
+                        ${item.timHome} <span style="color: #ffcc00; margin: 0 4px;">vs</span> ${item.timAway}
+                        </td>
+                        <td style="color: #00ffcc; font-weight: bold; font-family: monospace; font-size: 1.1rem;">${item.skor}</td>
+                        </tr>`;
                 tableBody.innerHTML += row;
             });
         }
