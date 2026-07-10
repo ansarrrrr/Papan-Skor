@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -34,7 +33,7 @@
             background-color: #2a2a2a;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             width: 100%;
             max-width: 600px;
             box-sizing: border-box;
@@ -85,8 +84,7 @@
         }
 
         button {
-            padding: 15px 25px;
-            /* Tombol diperbesar sedikit agar mudah ditekan di HP */
+            padding: 15px 25px; /* Tombol diperbesar sedikit agar mudah ditekan di HP */
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
@@ -95,8 +93,7 @@
             background-color: #ff5555;
             color: white;
             transition: 0.2s;
-            touch-action: manipulation;
-            /* Mencegah delay double-tap di HP */
+            touch-action: manipulation; /* Mencegah delay double-tap di HP */
         }
 
         button.btn-add {
@@ -120,7 +117,7 @@
             flex: 1;
             min-width: 120px;
         }
-
+        
         .btn-save {
             background-color: #007bff;
         }
@@ -139,7 +136,7 @@
             border-radius: 10px;
             padding: 15px;
             box-sizing: border-box;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .history-section h3 {
@@ -160,8 +157,7 @@
             font-size: 0.9rem;
         }
 
-        th,
-        td {
+        th, td {
             padding: 10px;
             text-align: center;
             border-bottom: 1px solid #444;
@@ -170,6 +166,11 @@
         th {
             background-color: #3a3a3a;
             color: #ffcc00;
+        }
+
+        /* Memaksa kolom skor akhir di header dan isi untuk tidak turun baris */
+        th:last-child, td:last-child {
+            white-space: nowrap;
         }
 
         tr:hover {
@@ -185,23 +186,19 @@
         }
 
         /* ======================================================== */
-        /* ATURAN 1: LAYOUT HP VERTIKAL (Tegak / Portrait)          */
-        /* Jika lebar layar kurang dari 500px (khas HP berdiri)     */
+        /* LAYOUT HP VERTIKAL (Tegak / Portrait)                    */
         /* ======================================================== */
         @media (max-width: 500px) and (orientation: portrait) {
             .scoreboard {
                 flex-direction: column;
-                /* Mengubah susunan jadi atas-bawah */
-                gap: 30px;
+                gap: 30px; 
             }
-
+            
             .score {
                 font-size: 4.5rem;
-                /* Ukuran skor sedikit disesuaikan */
                 margin: 5px 0;
             }
 
-            /* Beri garis pembatas tipis antara tim atas dan bawah */
             .team:first-child {
                 border-bottom: 1px solid #444;
                 padding-bottom: 20px;
@@ -209,13 +206,11 @@
         }
 
         /* ======================================================== */
-        /* ATURAN 2: LAYOUT HP HORIZONTAL (Miring / Landscape)      */
-        /* Jika layar melebar ke samping (khas HP dimiringkan)      */
+        /* LAYOUT HP HORIZONTAL (Miring / Landscape)                */
         /* ======================================================== */
         @media (max-height: 500px) and (orientation: landscape) {
             body {
                 justify-content: flex-start;
-                /* Agar tidak terlalu mentok atas-bawah */
                 padding: 5px;
             }
 
@@ -226,14 +221,12 @@
 
             .scoreboard {
                 flex-direction: row;
-                /* Kembali ke kiri-kanan */
                 gap: 20px;
                 padding: 10px;
             }
 
             .score {
                 font-size: 3.5rem;
-                /* Diperkecil agar muat dalam layar miring */
                 margin: 2px 0;
             }
 
@@ -257,7 +250,6 @@
         }
     </style>
 </head>
-
 <body>
 
     <h1>PAPAN SKOR DIGITAL</h1>
@@ -300,7 +292,7 @@
                     </tr>
                 </thead>
                 <tbody id="history-table-body">
-                </tbody>
+                    </tbody>
             </table>
         </div>
         <button class="btn-delete-history" onclick="hapusSemuaRiwayat()">Hapus Semua Riwayat</button>
@@ -311,7 +303,7 @@
         let skorAway = 0;
 
         // Jalankan fungsi ini saat halaman pertama kali dimuat
-        window.onload = function () {
+        window.onload = function() {
             tampilkanRiwayat();
         };
 
@@ -347,51 +339,47 @@
             document.getElementById('name-away').value = "";
         }
 
-        // FUNGSI BARU: MENYIMPAN DATA KE LOCAL STORAGE
-        // FUNGSI SIMPAN SKOR YANG SUDAH DIPERBARUI (MAKSIMAL 3 DATA)
+        // MENYIMPAN DATA KE LOCAL STORAGE (MAKSIMAL 3 DATA TERBARU)
         function simpanSkor() {
-            // Ambil nama tim (jika kosong beri nama default)
             let namaHome = document.getElementById('name-home').value.trim() || "HOME";
             let namaAway = document.getElementById('name-away').value.trim() || "AWAY";
-
-            // Ambil waktu saat ini
+            
             let sekarang = new Date();
-            let waktuString = sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' | ' + sekarang.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+            // Ambil jam menit (Contoh: 20.27)
+            let jam = sekarang.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+            // Ambil tanggal bulan (Contoh: 10 Jul)
+            let tanggal = sekarang.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'});
 
-            // Buat objek data pertandingan
+            // Buat objek data dengan memisahkan jam dan tanggal
             let dataPertandingan = {
-                waktu: waktuString,
+                jam: jam,
+                tanggal: tanggal,
                 timHome: namaHome.toUpperCase(),
                 timAway: namaAway.toUpperCase(),
                 skor: `${skorHome} - ${skorAway}`
             };
 
-            // Ambil data lama dari Local Storage (jika ada)
             let riwayat = JSON.parse(localStorage.getItem('riwayatSkor')) || [];
-
-            // Masukkan data baru ke baris paling atas (indeks 0)
+            
+            // Masukkan data baru ke baris paling atas (index 0)
             riwayat.unshift(dataPertandingan);
 
-            // KUNCI PERUBAHAN: Potong array agar hanya menyimpan maksimal 3 data terbaru
+            // Batasi data di Local Storage agar maksimal hanya ada 3 saja
             if (riwayat.length > 3) {
-                riwayat = riwayat.slice(0, 3); // Mengambil indeks 0, 1, dan 2 saja
+                riwayat = riwayat.slice(0, 3);
             }
 
-            // Simpan kembali ke Local Storage
             localStorage.setItem('riwayatSkor', JSON.stringify(riwayat));
-
-            // Refresh tampilan tabel
             tampilkanRiwayat();
-
+            
             alert('Skor berhasil disimpan!');
         }
 
-        // FUNGSI BARU: MENAMPILKAN DATA DARI LOCAL STORAGE KE TABEL
+        // MENAMPILKAN DATA DARI LOCAL STORAGE KE TABEL
         function tampilkanRiwayat() {
             let riwayat = JSON.parse(localStorage.getItem('riwayatSkor')) || [];
             let tableBody = document.getElementById('history-table-body');
-
-            // Kosongkan isi tabel terlebih dahulu
+            
             tableBody.innerHTML = "";
 
             if (riwayat.length === 0) {
@@ -399,20 +387,25 @@
                 return;
             }
 
-            // Loop data dan masukkan ke tabel
             riwayat.forEach(item => {
+                // Mengatasi kompatibilitas jika ada format data lama di local storage
+                let displayWaktu = item.jam && item.tanggal ? 
+                    `${item.jam}<br><span style="font-size: 0.8rem; color: #aaa;">${item.tanggal}</span>` : 
+                    item.waktu;
+
                 let row = `<tr>
-                    <td>${item.waktu}</td>
+                    <td style="line-height: 1.2;">${displayWaktu}</td>
                     <td style="font-weight: bold; text-align: center; width: 50%;">
                         ${item.timHome} <span style="color: #ffcc00; margin: 0 4px;">vs</span> ${item.timAway}
-                        </td>
-                        <td style="color: #00ffcc; font-weight: bold; font-family: monospace; font-size: 1.1rem;">${item.skor}</td>
-                        </tr>`;
+                    </td>
+                    <td style="color: #00ffcc; font-weight: bold; font-family: monospace; font-size: 1.1rem; white-space: nowrap;">
+                        ${item.skor}
+                    </td>
+                </tr>`;
                 tableBody.innerHTML += row;
             });
         }
 
-        // FUNGSI BARU: MENGHAPUS LOCAL STORAGE
         function hapusSemuaRiwayat() {
             if (confirm('Apakah Anda yakin ingin menghapus semua riwayat pertandingan?')) {
                 localStorage.removeItem('riwayatSkor');
@@ -421,5 +414,4 @@
         }
     </script>
 </body>
-
 </html>
